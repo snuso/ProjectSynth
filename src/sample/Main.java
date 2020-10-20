@@ -91,9 +91,6 @@ public class Main extends Application {
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
             }
 
-            public void play(){
-
-            }
 
             button.setOnAction(event);
 
