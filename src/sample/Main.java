@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -33,7 +34,8 @@ public class Main extends Application {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.aac"));
         VBox vBox = new VBox(button);
-        Scene scene = new Scene(vBox, 960, 600);
+        vBox.setAlignment(Pos.CENTER);
+        Scene scene = new Scene(vBox, 200, 100);
 
         primaryStage.setScene(scene);
         primaryStage.show();
