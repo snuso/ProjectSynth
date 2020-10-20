@@ -20,24 +20,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 //AudioSystem
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 
 public class Main extends Application {
 
     public String filepath;
     public boolean fileSelected;
-    // to store current position
-    Long currentFrame;
-    Clip clip;
 
-    // current status of clip
-    String status;
-
-    AudioInputStream audioInputStream;
 
     // launch the application
     public void start(Stage stage){
@@ -49,7 +40,10 @@ public class Main extends Application {
             stage.setTitle("FileChooser");
 
             // create a File chooser
-            FileChooser fil_chooser = new FileChooser();
+            FileChooser file_chooser = new FileChooser();
+            file_chooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.acac")
+            );
 
             // create a Label
             Label label = new Label("no files selected");
@@ -64,32 +58,39 @@ public class Main extends Application {
                         public void handle(ActionEvent e){
 
                             // get the file selected
-                            File file = fil_chooser.showOpenDialog(stage);
+                            File file = file_chooser.showOpenDialog(stage);
 
                             if (file != null) {
 
-                                label.setText(file.getAbsolutePath()
-                                        + "  selected");
-                                filepath = file.getAbsolutePath();
+
+
+                                try {
+                                    label.setText(file.getCanonicalPath()
+                                            + "  selected");
+                                } catch (IOException ex) {
+                                    ex.printStackTrace();
+                                }
+                                try {
+                                    filepath = file.getCanonicalPath();
+                                } catch (IOException ex) {
+                                    ex.printStackTrace();
+                                }
                                 fileSelected = true;
                                 System.out.println(filepath);
+
+                                //AUDIO
+                                Media media = new Media(new File(filepath).toURI().toString());
+                                MediaPlayer mediaPlayer = new MediaPlayer(media);
+
+                                mediaPlayer.setAutoPlay(true);
+                                stage.show();
+                                //AUDIO
+
                             }
                         }
                     };
 
-            if(fileSelected){
-                audioInputStream = AudioSystem.getAudioInputStream(new File(filepath).getAbsoluteFile());
-                System.out.println("file selected");
 
-
-                // create clip reference
-                clip = AudioSystem.getClip();
-
-                // open audioInputStream to the clip
-                clip.open(audioInputStream);
-
-                clip.loop(Clip.LOOP_CONTINUOUSLY);
-            }
 
 
             button.setOnAction(event);
@@ -105,7 +106,7 @@ public class Main extends Application {
                         {
 
                             // get the file selected
-                            File file = fil_chooser.showSaveDialog(stage);
+                            File file = file_chooser.showSaveDialog(stage);
 
                             if (file != null) {
                                 label.setText(file.getAbsolutePath()
